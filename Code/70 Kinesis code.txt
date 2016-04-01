@@ -1,0 +1,181 @@
+Building Real-Time Dashboards with Amazon Kinesis Dynamic Aggregators
+spl57-dashboards-with-kenesis
+Command Reference v 1.3
+=====
+Using this command reference. 
+=====
+1. Locate the section you need. Each section in this file matches a section in the lab instructions.
+
+2. Replace items in angle brackets - < > - with appropriate values. For example, in this command you would replace the value - <JobFlowID> - (including the brackets) with the parameter indicated in the lab instructions: 
+
+   elastic-mapreduce --list <JobFlowID>
+
+3. Do NOT enable the Word Wrap feature in Windows Notepad or the text editor you use to view this file.
+
+=====
+IAM Policy & Role Definition
+=====
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1411134790000",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:List*",
+        "kinesis:Put*",
+        "kinesis:Describe*",
+        "kinesis:Get*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1411134810000",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*",
+        "s3:Put*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1411134830000",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:Batch*",
+        "dynamodb:Get*",
+        "dynamodb:List*",
+        "dynamodb:Put*",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:Create*",
+        "dynamodb:Describe*",
+        "dynamodb:Update*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1411134855000",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:Describe*",
+        "cloudwatch:Get*",
+        "cloudwatch:List*",
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+
+=====
+SSH Into your EC2 Instance
+=====
+
+ssh -i <key pair file> ec2-user@<dns name>
+
+=====
+Starting the Data Producer
+=====
+
+screen
+
+./run-producer.sh
+
+=====
+Per Segment Aggregator Definition
+=====
+
+[{"dataExtractor": "REGEX",
+    "dateFormat": "",
+    "dateItem": 2,
+    "dateAttributeAlias":"sensorTS",
+    "labelItems": [
+      1
+    ],
+    "labelAttributeAlias":"segment",
+    "namespace": "BySegment",
+    "regularExpression": "^(.*) \\((.*)\\) ts-(\\d+) (\\d+\\.\\d+)x(\\-\\d+\\.\\d+) (\\d+.\\d+) at (\\d+.\\d+) T:(\\d+\\.\\d+) c:\\ +(\\d+\\.\\d+) deg\\ +(\\d+\\.\\d+)$",
+    "summaryItems": [
+      "max(5) max-pressure",
+      "max(6) max-flow",
+      "max(9) max-corrosion",
+      "min(3) lat",
+      "min(4) lng"
+    ],
+    "timeHorizons": [
+      "MINUTE"
+    ],
+    "type": "SUM",
+    "emitMetrics":"true",
+    "writeIOPS":80
+  }]
+
+=====
+Deployment URLs for the Kinesis Aggregators Web Application
+=====
+
+us-east-1 - https://s3.amazonaws.com/amazon-kinesis-aggregators-us-east-1/dist/AmazonKinesisAggregators.war 
+
+us-west-1 - https://s3-us-west-1.amazonaws.com/amazon-kinesis-aggregators-us-west-1/dist/AmazonKinesisAggregators.war 
+
+us-west-2 - https://s3-us-west-2.amazonaws.com/amazon-kinesis-aggregators-us-west-2/dist/AmazonKinesisAggregators.war 
+
+eu-west-1 - https://s3-eu-west-1.amazonaws.com/amazon-kinesis-aggregators-eu-west-1/dist/AmazonKinesisAggregators.war 
+
+=====
+Example Query for Labels using Aggregators Web API
+=====
+
+http://<aggregators beanstalk application url>/keyQuery?namespace=BySegment&scope=HashKey
+
+=====
+Example Query for Date Range using Aggregators Web API
+=====
+
+http://<aggregators beanstalk application url>/dateQuery?namespace=BySegment&operator=GT&granularity=MINUTE&date-value=2015-09-23+09:00:00
+
+=====
+Upload Custom Dashboarding Application to S3
+=====
+
+aws s3 sync s3://spl57 s3://<my bucket> --recursive --region <region> --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --source-region eu-west-1
+
+=====
+Appendix 1: Per Sensor Aggregation
+=====
+
+  { "dataExtractor": "REGEX",
+    "dateFormat": "",
+    "dateItem": 2,
+    "dateAttributeAlias":"sensorTS",
+    "labelItems": [
+      0
+    ],
+    "labelAttributeAlias":"Sensor",
+    "namespace": "BySensor",
+    "regularExpression": "^(.*) \\((.*)\\) ts-(\\d+) (\\d+\\.\\d+)x(\\-\\d+\\.\\d+) (\\d+.\\d+) at (\\d+.\\d+) T:(\\d+\\.\\d+) c:\\ +(\\d+\\.\\d+) deg\\ +(\\d+\\.\\d+)$",
+    "summaryItems": [
+      "max(5) max-pressure",
+      "max(6) max-flow",
+      "max(9) max-corrosion",
+      "min(3) lat",
+      "min(4) lng"
+    ],
+    "timeHorizons": [
+      "HOUR"
+    ],
+    "type": "SUM",
+    "emitMetrics":"true",
+    "writeIOPS":300
+    }

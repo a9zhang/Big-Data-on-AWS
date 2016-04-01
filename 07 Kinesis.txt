@@ -1,0 +1,18 @@
+Kinesis
+
+1. Create Kinesis Stream using AWS Console
+2. Run a data producer simulation applcation to push data into stream
+3. Configure Kinesis Aggregators to provide real-time analytics against data on the stream
+4. View data via AWS CloudWatch
+5. View data via Analytics Dashboard built with Rickshaw JavaScript Framework hosted on S3
+
+Stream -> multiple shards (1M/s)
+
+Capture Kinesis stream into aggregators
+Store data into dynamodb
+Use tomcat application and js to show in dashboard
+
+Create Policy and Role for Kinesis
+Producer to injest sensor data
+Aggregation GROUPBY
+

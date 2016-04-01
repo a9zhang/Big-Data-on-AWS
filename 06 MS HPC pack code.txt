@@ -1,0 +1,42 @@
+AWS - Microsoft HPC Pack 2012 R2 on AWS - v0.1
+==================================================================================================================
+
+Using this command reference. 
+
+==================================================================================================================
+
+
+1. Locate the section you need. Each section in this file matches a section in the lab instructions.
+
+2. Do NOT enable the Word Wrap feature in Windows Notepad or the text editor you use to view this file.
+
+
+==================================================================================================================
+
+
+Scale Microsoft HPC Pack 2012 R2 - Create an image of the Compute Node Template
+
+Add the following XML snippet to the end of the C:\Program Files\Amazon\Ec2ConfigService\sysprep2008.xml file
+  - before the </settings> tag of the <settings pass="specialize"> section
+    - (about 3 lines before the end of the file)
+
+<component name="Microsoft-Windows-UnattendedJoin" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Identification>
+    <UnsecureJoin>false</UnsecureJoin>
+    <Credentials>
+      <Domain>awslab.local</Domain>
+      <Password>H1ghP3rf</Password>
+      <Username>HPCUser</Username>
+    </Credentials>
+    <JoinDomain>awslab.local</JoinDomain>
+  </Identification>
+</component>
+
+
+==================================================================================================================
+
+
+
+
+
+© 2013, 2014, 2015 Amazon Web Services, Inc. or its affiliates. All rights reserved.

@@ -1,0 +1,5 @@
+1. Use auto-scaling to launch spot instances at price much lower than on-demand price
+2. Incorporate cloudWatch metrics to monitor EC2 instances
+3. Scale down on-demand and spot instances when the job is completed
+
+ec2-52-34-29-255.us-west-2.compute.amazonaws.com

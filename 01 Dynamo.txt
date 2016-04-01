@@ -1,0 +1,19 @@
+1. Create four tables in Dynamo: productCatalog, Forum, Thread, Reply
+2. Load data into tables through cloudmation php scripts
+3. Query tables through console manually and programmingly
+4. Create a twitter app with access token
+5. Ingest twitter API consumer key and consume secret into web server
+6. Review Public twitter stream into dynamo
+7. Increase Dynamo throughput by write capacity
+ 
+Dynamo Social Stream twitter 
+http://ec2-54-201-238-241.us-west-2.compute.amazonaws.com/dynamosample/index.php#main
+
+Twitter App:
+https://apps.twitter.com/app/12146504/keys
+
+Dynamo Instruction
+https://qwiklabs.com/focuses/2074
+
+Consumer Key: n5HqFU50dwkjkCDBf5rRrYgPN
+Consumer Secrete Key: FFKUXaDpu9h0oFfZ1LlNrJyk6uGB1x9CVcTFRM58wNPVGMBJBk

@@ -1,0 +1,5 @@
+Dynamo 1823
+Redshift 1307
+EMR 701
+EC with spot intance 3156
+Kenesis 766

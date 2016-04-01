@@ -1,0 +1,10 @@
+- Create EMR Cluster with 1 master and 4 worker
+
+1. Create buckets and folders on S3
+2. Use Hive to create tables and data structure from google Ngram data on S3
+3. Use Hive to query tables, clean data and persist in Amazon S3
+4. Use ganglia to monitor the cluster
+5. Run word counts on 12 years encyclopedia
+
+Master	m1.medium (1) Storage 410GB
+Core	m1.large (4) Storage 850GB

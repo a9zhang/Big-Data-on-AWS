@@ -1,0 +1,50 @@
+Self-Paced Lab: Launching Amazon EC2 Spot Instances with Auto Scaling and Amazon CloudWatch
+spl41-spot-with-autoscaling
+
+==========
+
+Using this command reference. 
+
+==========
+
+1. Locate the section you need. Each section in this file matches a section in the lab instructions.
+
+2. Replace items in brackets - < > - with appropriate values. For example, this text might list the following command:
+
+elastic-mapreduce --list <JobFlowID>
+
+You would replace <JobFlowID> with your own value, so that the resulting command might look similar to:
+
+elastic-mapreduce --list 1784BS92
+
+3. Do NOT enable the Word Wrap feature in Windows Notepad or the text editor you use to view this file.
+
+==========
+Launch On-Demand Instances
+==========
+
+aws autoscaling create-launch-configuration --launch-configuration-name odtestlaunch --image-id ami-1b3b462b --instance-type t1.micro
+
+
+aws autoscaling describe-launch-configurations --launch-configuration-names odtestlaunch
+
+
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name spotodtestgroup --launch-configuration-name odtestlaunch --min-size 2 --max-size 2 --availability-zones us-west-2a
+
+aws autoscaling describe-auto-scaling-groups
+
+
+aws autoscaling enable-metrics-collection --auto-scaling-group-name spotodtestgroup --granularity 1Minute --metrics GroupInServiceInstances
+
+aws autoscaling create-launch-configuration --launch-configuration-name spottestlaunch --image-id ami-1b3b462b --instance-type t1.micro --spot-price 0.03
+
+aws autoscaling describe-launch-configurations --launch-configuration-names spottestlaunch
+
+aws autoscaling update-auto-scaling-group --auto-scaling-group-name spotodtestgroup --launch-configuration-name spottestlaunch --min-size 0 --max-size 6 --desired-capacity 4
+
+aws autoscaling update-auto-scaling-group --auto-scaling-group-name spotodtestgroup --launch-configuration-name spottestlaunch --desired-capacity 6
+
+aws autoscaling put-scaling-policy --auto-scaling-group-name spotodtestgroup --policy-name spotodtestpolicy --adjustment-type ExactCapacity --scaling-adjustment 0
+
+
+© 2014 Amazon Web Services, Inc. or its affiliates. All rights reserved.

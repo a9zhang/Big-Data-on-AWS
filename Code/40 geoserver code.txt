@@ -1,0 +1,87 @@
+Introduction to GeoServer on AWS - 1.3
+==================================================================================================================
+
+Using this command reference. 
+
+==================================================================================================================
+1. Locate the section you need. Each section in this file matches a section in the lab instructions.
+2. Replace items in angle brackets - < > - with appropriate values. For example, in this command you would replace the value - <JobFlowID> - (including the brackets) with the parameter indicated in the lab instructions:    elastic-mapreduce --list <JobFlowID>
+3. Do NOT enable the Word Wrap feature in Windows Notepad or the text editor you use to view this file.
+==================================================================================================================
+
+Install Tomcat and GeoServer
+==================================================================================================================
+
+sudo apt-get -y update
+sudo apt-get -y install tomcat7
+sudo apt-get -y install unzip
+
+cd /opt
+sudo wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.6.2/geoserver-2.6.2-war.zip
+sudo unzip geoserver-2.6.2-war.zip -d geoserver-2.6.2
+sudo cp geoserver-2.6.2/geoserver.war /var/lib/tomcat7/webapps
+sudo service tomcat7 start
+
+==================================================================================================================
+==================================================================================================================
+Setup client for interacting with PostgreSQL
+==================================================================================================================
+
+sudo apt-get -y install postgresql postgresql-contrib
+sudo apt-get -y install postgis postgresql-9.3-postgis-2.1
+
+==================================================================================================================
+
+==================================================================================================================
+
+Configure PostGIS on PostgreSQL
+==================================================================================================================
+
+psql --host=mypostgis.cuiiehsfssdn.us-east-1.rds.amazonaws.com --port=5432 --username=pgadmin --password --dbname=firstdb
+
+firstdb=> create extension postgis;
+firstdb=> create extension fuzzystrmatch;
+firstdb=> create extension postgis_tiger_geocoder;
+firstdb=> create extension postgis_topology;
+
+firstdb=> \dn
+
+firstdb=> alter schema tiger owner to rds_superuser;
+
+firstdb=> alter schema topology owner to rds_superuser;
+
+firstdb=> \dn
+
+CREATE FUNCTION exec(text) returns text language plpgsql volatile AS $f$ BEGIN EXECUTE $1; RETURN $1; END; $f$;
+SELECT exec('ALTER TABLE ' || quote_ident(s.nspname) || '.' || quote_ident(s.relname) || ' OWNER TO rds_superuser')
+  FROM (
+    SELECT nspname, relname
+    FROM pg_class c JOIN pg_namespace n ON (c.relnamespace = n.oid) 
+    WHERE nspname in ('tiger','topology') AND
+    relkind IN ('r','S','v') ORDER BY relkind = 'S')
+s;
+
+select na.address, na.streetname, na.streettypeabbrev, na.zip 
+from normalize_address('1 Devonshire Place, Boston, MA 02109') as na;
+
+firstdb1=> select topology.createtopology('my_new_topo',26986,0.5);
+
+Firstdb=> \q
+
+==================================================================================================================
+
+==================================================================================================================
+
+Use GeoServer to serve PostGIS hosted geospatial data
+Import a Shape file vector data collection into the PostgreSQL RDS instance
+==================================================================================================================
+
+cd
+shp2pgsql -G -I /var/lib/tomcat7/webapps/geoserver/data/data/shapefiles/states.shp > states.sql
+
+psql --host=mypostgis.cuiiehsfssdn.us-east-1.rds.amazonaws.com --port=5432 --username=pgadmin --password --dbname=firstdb -f states.sql
+
+
+==================================================================================================================
+
+==================================================================================================================© 2013, 2014 Amazon Web Services, Inc. or its affiliates. All rights reserved.

@@ -1,0 +1,36 @@
+Redshift: petabyte-scale data warehouse, columnar storage, parallezing, distributing queries accross mulitple nodes
+
+1. Launch redshift cluster with 2 nodes
+2. Connect redshift through dbvisualizer
+3. Copy flight, aircraft, airport data from S3 to redshift (23 data file in CSV, one for each year 1990-2012, Loaded under 3 mins) 
+4. Query flight data under few seconds (96million records, Query each under few seconds)
+5. Use "explain select" to analze query, use "analyze compression" to recommend compression (seq scan statement)
+6. Create snapshot and export data from redshift
+7. Monitor redshift performance
+
+
+6GB data, compressed in 700MB
+load in S3 parallel
+
+
+database name: lab
+port: 5439
+user name: master
+password: ########
+
+
+NodeType: dc1.large
+CPU: 7 EC2 Computer Units (2 virtual cores) per node
+Memory: 15GB per node
+Storage: 160GB SSD storage per node
+I/O Performance: Moderate
+Cluster Type: Multi Node
+Number of Computer Nodes: 2
+Maxium: 32
+Mini: 2
+
+
+Dense Compute: 32x0.16TB=5.12TB
+Dense Storage: 128x16TB=2PB
+
+aws_access_key_id=AKIAJXHDVRHWBBEYGMAA;aws_secret_access_key=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;

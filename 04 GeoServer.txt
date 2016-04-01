@@ -1,0 +1,18 @@
+GeoServer
+
+1. Create EC2 for GeoServer
+2. Install GeoServer (Tomcat) navigate GeoServer web UI and install Geospatial dataset
+3. Create RDS (postGres)
+4. SSH to EC2 and install postGres and PostGIS client and upload dataset into RDS
+5. Create a GeoServer AMI
+6. Create autoScale group to scale Geoserver tier
+7. Place geoserver behind of ELB
+8. Autoscaling by replacing terminated instance
+
+
+sg-9d7f01e5
+sg-8eb2ccf6 HOLGEOELB
+
+ec2-54-173-104-219.compute-1.amazonaws.com
+mypostgis.cuiiehsfssdn.us-east-1.rds.amazonaws.com:5432
+
